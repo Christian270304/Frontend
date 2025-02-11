@@ -1,0 +1,121 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #fff;
+}
+
+.login-container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    width: 360px;
+    text-align: center;
+    position: relative;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 5px;
+    background: #f9f9f9;
+    color: #333;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.form-group label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: all 0.3s ease;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.form-group input:not(:placeholder-shown) + label,
+.form-group input:focus + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #4CAF50;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+.toggle-mode {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.toggle-mode a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.toggle-mode a:hover {
+    text-decoration: underline;
+}
+
+.register-form {
+    display: none;
+}
+
+.social-login {
+    margin-top: 20px;
+}
+
+.social-login a {
+    display: inline-block;
+    margin: 5px;
+    padding: 10px 15px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.social-login a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}

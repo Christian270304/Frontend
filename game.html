@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Multijugador</title>
+    <link rel="stylesheet" href="css/game.css">
+    
+</head>
+<body>
+    
+    <div class="header">
+        <h1>Stars Hunters</h1>
+        <div class="buttons">
+            <div id="hipervelocitat">Hipervelocitat NO disponible</div>
+            <button id="adminButton">Administrador</button>
+            <button id="playButton">Play</button>
+        </div>
+    </div>
+    <div class="game-container" id="gameContainer">
+        <canvas id="gameCanvas" width="1000" height="550"></canvas>
+    
+    <div id="colores">
+        <buttons id="red">Rojo</buttons>
+        <buttons id="green">Verde</buttons>
+        <buttons id="yellow">Amarillo</buttons>
+        <buttons></buttons>
+        <buttons></buttons>
+        <buttons></buttons>
+    </div>
+        <label class="text-scoreboard">Puntuació: </label>
+        <div class="scoreboard" id="scoreboard">0</div>
+    </div>
+    
+    
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <!-- <script src="js/socket.js"></script> -->
+    <script src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/servidores.css">
+    <title>Servidores - Star Hunter</title>
+</head>
+<body>
+    <div class="server-container">
+        <!-- Encabezado -->
+        <div class="server-header">
+            <h1>Selecciona un servidor</h1>
+            <p>Conéctate a uno de nuestros servidores para comenzar a jugar.</p>
+        </div>
+
+        <!-- Crear Servidor -->
+        <div class="create-server-form">
+            <input type="text" id="serverName" placeholder="Nombre del servidor" required>
+            <button id="createServerBtn" onclick="createServer()">Crear Servidor</button>
+        </div>
+
+        <!-- Lista de servidores -->
+        <div id="server-list" class="server-list">
+            <!-- Tarjeta de servidor -->
+            <div class="server-card">
+                <h3>Servidor 1</h3>
+                <p><span>12/50</span> jugadores en línea</p>
+                <p>Ping promedio: <span>30ms</span></p>
+                <button class="connect-button">Conectar</button>
+            </div>
+
+            <div class="server-card">
+                <h3>Servidor 2</h3>
+                <p><span>25/50</span> jugadores en línea</p>
+                <p>Ping promedio: <span>45ms</span></p>
+                <button class="connect-button">Conectar</button>
+            </div>
+
+            <div class="server-card">
+                <h3>Servidor 3</h3>
+                <p><span>8/50</span> jugadores en línea</p>
+                <p>Ping promedio: <span>20ms</span></p>
+                <button class="connect-button">Conectar</button>
+            </div>
+
+            <div class="server-card">
+                <h3>Servidor 4</h3>
+                <p><span>35/50</span> jugadores en línea</p>
+                <p>Ping promedio: <span>60ms</span></p>
+                <button class="connect-button">Conectar</button>
+            </div>
+        </div>
+
+        <!-- Pie de página -->
+        <div class="footer">
+            <p>Star Hunter © 2023 Todos los derechos reservados.</p>
+        </div>
+    </div>
+    <script>
+        async function createServer() {
+            const serverName = document.getElementById('serverName').value;
+
+            const response = await fetch('http://localhost:3000/servers/create', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: serverName })
+            });
+
+            if (response.ok) {
+                alert('Server created successfully');
+                loadServers();
+            } else {
+                alert('Error creating server' + response.m);
+            }
+        }
+
+        async function loadServers() {
+            const response = await fetch('http://localhost:3000/servers/list',{
+                credentials: 'include'
+            });
+            const servers = await response.json();
+            const serverList = document.getElementById('server-list');
+            serverList.innerHTML = '';
+
+            servers.forEach(server => {
+                const serverCard = document.createElement('div');
+                serverCard.className = 'server-card';
+                serverCard.innerHTML = `
+                    <h3>${server.name}</h3>
+                    <p><span>12/50</span> jugadores en línea</p>
+                    <p>Ping promedio: <span>30ms</span></p>
+                    <button class="connect-button" onclick="selectServer('${server.namespace}')">Conectar</button>
+                `;
+                serverList.appendChild(serverCard);
+            });
+        }
+
+        function selectServer(namespace) {
+            console.log(`Conectando al servidor con namespace: ${namespace}`);
+            // Redirigir a la página del juego con el namespace como parámetro
+            window.location.href = `/game.html?namespace=${namespace}`;
+        }
+
+        loadServers();
+    </script>
+</body>
+</html>
