@@ -11,7 +11,6 @@ const visualPlayerSize = 50;
 let currentPlayer = {
     x: Math.floor(Math.random() * (canvasWidth - playerSize)), 
     y: Math.floor(Math.random() * (canvasHeight - playerSize))
-    
 };
 
 let moving = { up: false, down: false, left: false, right: false };
@@ -24,28 +23,6 @@ const maxEstrellas = 10;
 const despawnTime = 20000;
 const estrellaImg = new Image();
 estrellaImg.src = '../images/estrella.svg';
-
-// Conexión al servidor
-const urlParams = new URLSearchParams(window.location.search);
-const namespace = urlParams.get('namespace');
-const socket = io(`http://localhost:3000${namespace}`, { upgrade: true });
-// Recibe el ID del jugador desde el servidor
-socket.on('playerID', (id) => {
-    currentPlayer.id = id;
-    console.log("ID del jugador:", currentPlayer.id);
-});
-
-// Recibe el estado del juego (jugadores y estrellas) cuando se conecta
-socket.on('gameState', (state) => {
-    console.log('Recibido gameState:', state);
-    players = state.players;  // Actualiza los jugadores
-    estrellas = state.estrellas; // Actualiza las estrellas
-    drawPlayers();  // Dibuja los jugadores
-    drawEstrellas();  // Dibuja las estrellas
-});
-
-
-
 
 // Dibujar las estrellas
 function drawEstrellas() {
@@ -79,12 +56,11 @@ function checkCollisions() {
 // Dibujar los jugadores
 const nauJugador = new Image();
 nauJugador.src = '../images/nau3_old.png'; // Verifica que la ruta sea correcta
-
+const nauEnemic = new Image();
+nauEnemic.src = '../images/nauEnemiga.png'; // Verifica que la ruta sea correcta
 // Añadir la función onload para asegurarse de que la imagen se cargue antes de dibujar
 nauJugador.onload = () => {
-    console.log("Imagen cargada correctamente.");
-    // Llamamos a la función de inicio del juego aquí después de que la imagen se haya cargado
-    update();  // Inicia el ciclo de actualización
+    update();  
 };
 
 nauJugador.onerror = () => {
@@ -97,19 +73,21 @@ function drawPlayers() {
 
     drawEstrellas(); // Dibujar estrellas antes de los jugadores
 
+    let score = document.getElementById('scoreboard');
     for (const id in players) {
         const player = players[id];
+        const playerImage = id === socket.id ? nauJugador : nauEnemic; // Usar la imagen correcta
 
         ctx.save(); // Guarda el contexto
 
         // Mueve el origen de coordenadas al centro del jugador
         ctx.translate(player.x + visualPlayerSize / 2, player.y + visualPlayerSize / 2);
 
-        // Aplica la rotación (Nota: usamos + en lugar de - para corregir la dirección)
+        // Aplica la rotación
         ctx.rotate(player.rotation);
 
         // Dibujar la nave centrada
-        ctx.drawImage(nauJugador, -visualPlayerSize / 2, -visualPlayerSize / 2, visualPlayerSize, visualPlayerSize);
+        ctx.drawImage(playerImage, -visualPlayerSize / 2, -visualPlayerSize / 2, visualPlayerSize, visualPlayerSize);
 
         ctx.restore(); // Restaura el contexto
     }
@@ -173,8 +151,8 @@ document.addEventListener('keyup', (event) => {
 // Mover al jugador en el canvas
 function movePlayer() {
     if (moving.up || moving.down || moving.left || moving.right) {
-        calculateAngle();  // Calcula el ángulo antes de mover
-        currentPlayer.rotation = angle;  // Guarda el ángulo en el jugador actual
+        calculateAngle();  
+        currentPlayer.rotation = angle;  
     }
 
     if (moving.up) currentPlayer.y = Math.max(0, currentPlayer.y - velocidad);
@@ -186,7 +164,7 @@ function movePlayer() {
         players[currentPlayer.id] = { 
             x: currentPlayer.x, 
             y: currentPlayer.y, 
-            rotation: currentPlayer.rotation // Enviar la rotación correcta
+            rotation: currentPlayer.rotation 
         };
         socket.emit('move', { x: currentPlayer.x, y: currentPlayer.y, rotation: currentPlayer.rotation });
     }
@@ -197,43 +175,31 @@ let angle = 0;
 
 // Función para calcular el ángulo según la dirección del movimiento
 function calculateAngle() {
-    // Si se mueve hacia arriba y a la izquierda (Arriba-Izquierda)
     if (moving.up && moving.left) {
-        angle = Math.PI * 1.75;  // ↖ 315° (Corregido)
+        angle = Math.PI * 1.75;
     } 
-    // Si se mueve hacia arriba y a la derecha (Arriba-Derecha)
     else if (moving.up && moving.right) {
-        angle = Math.PI / 4;     // ↗ 45° (Correcto)
+        angle = Math.PI / 4;
     }
-    // Si se mueve hacia abajo y a la izquierda (Abajo-Izquierda)
     else if (moving.down && moving.left) {
-        angle = Math.PI * 1.25;  // ↙ 225° (Corregido)
+        angle = Math.PI * 1.25;
     }
-    // Si se mueve hacia abajo y a la derecha (Abajo-Derecha)
     else if (moving.down && moving.right) {
-        angle = Math.PI * 0.75;  // ↘ 135° (Corregido)
+        angle = Math.PI * 0.75;
     }
-    // Si solo se mueve hacia arriba (Arriba)
     else if (moving.up) {
-        angle = 0;               // ↑ 0° (Correcto)
+        angle = 0;
     }
-    // Si solo se mueve hacia abajo (Abajo)
     else if (moving.down) {
-        angle = Math.PI;         // ↓ 180° (Correcto)
+        angle = Math.PI;
     }
-    // Si solo se mueve hacia la izquierda (Izquierda)
     else if (moving.left) {
-        angle = Math.PI * 1.5;   // ← 270° (Correcto)
+        angle = Math.PI * 1.5;
     }
-    // Si solo se mueve hacia la derecha (Derecha)
     else if (moving.right) {
-        angle = Math.PI / 2;     // → 90° (Correcto)
+        angle = Math.PI / 2;
     }
-
-    // Mostrar en consola para depurar
-    console.log("Ángulo calculado:", angle, "Radianes, ", angle * 180 / Math.PI, "°");
 }
-
 
 // Actualizar el juego
 function update() {
